@@ -9,11 +9,56 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    var midX = CGFloat()
+    var midY = CGFloat()
+    
     //view did Apear:
     override func didMoveToView(view: SKView) {
-
+        midX = CGRectGetMidX(self.frame)
+        midY = CGRectGetMidY(self.frame)
+        addBackground()
+        addBall()
+        addBorder()
+        removeGravityAndApplyImpulse()
+        
     }
     
+    func removeGravityAndApplyImpulse(){
+        physicsWorld.gravity = CGVectorMake(0, 0)
+        let ball = childNodeWithName("ball")!
+        ball.physicsBody?.applyImpulse(CGVectorMake(2, 2))
+    }
+    func addBorder(){
+        let borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        borderBody.affectedByGravity = false
+        borderBody.friction = 0
+        borderBody.dynamic = false
+        
+        scene?.physicsBody = borderBody
+    }
+    
+    func addBall(){
+        let ball = SKSpriteNode(imageNamed: "ball")
+        ball.name = "ball"
+        ball.position = CGPoint(x: midX, y: self.frame.size.height - 50)
+        ball.zPosition = 2
+        ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2)
+
+        ball.physicsBody?.friction = 0
+        ball.physicsBody?.restitution = 1
+        ball.physicsBody?.angularDamping = 0
+        ball.physicsBody?.linearDamping = 0
+        ball.physicsBody?.allowsRotation = false
+        addChild(ball)
+    }
+    
+    func addBackground(){
+        let background = SKSpriteNode(imageNamed: "bg")
+        background.zPosition = 1
+        background.position = CGPoint(x: midX, y: midY)
+        background.size = view!.frame.size
+        addChild(background)
+    }
     
     func addLabel(){
         /* Setup your scene here */
